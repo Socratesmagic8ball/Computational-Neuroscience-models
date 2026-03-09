@@ -1,0 +1,49 @@
+xopen("temp.hoc")
+objref cell5,pclist,rpc,nil,pctvec,pcidvec
+pclist=new List()
+cell5= new pcadex(0.5)
+pclist.append(cell5)
+
+pctvec= new Vector()
+pcidvec= new Vector()
+
+for k=0, pclist.count-1 {
+	pclist.object(k).recordpc.record(&pclist.object(k).pcpp.vv)
+}
+for c=0,pclist.count()-1{
+	rpc=pclist.object(c).connect2target(nil)
+	rpc.record(pctvec,pcidvec,c)
+}
+
+
+objref FIL1
+FIL1=new File()
+FIL1.wopen("pcscavolt.csv")
+tstop=1000
+dt=0.025
+objref cvode
+cvode=new CVode()
+cvode.atol(0.001)
+cvode.use_daspk(1)
+cvode_active(1)
+pclist.object(0).pcpp.del=0
+pclist.object(0).pcpp.dur=1000
+pclist.object(0).pcpp.amp=0.006
+pclist.object(0).pcpp.i_i=0.023
+
+
+objref g1
+newPlotV()
+g1=graphItem
+g1.size(0,tstop,-100,50)
+g1.erase_all
+
+g1.erase_all
+g1.addvar("pclist.object(0).pcpp.vv",2,2)
+
+run()
+for i=0, pclist.object(0).recordpc.size()-1{
+	FIL1.printf("%f,",pclist.object(0).recordpc.x[i])
+	FIL1.printf("\n")
+}
+print "Granule spiking", pctvec.size()

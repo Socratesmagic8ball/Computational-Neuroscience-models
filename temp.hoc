@@ -1,0 +1,27 @@
+
+
+begintemplate pcadex
+	public pc,pcpp,x,y,z,sum,c,transmembranecurrent,vec_pc,exc,inh
+	public recordpc,connect2target
+	create pc
+	objref pcpp,recordpc,vec_pc
+	proc init(){
+		vec_pc=new Vector()
+		create pc
+		pc{
+			diam= 10
+			pcpp= new PROADEX(0.5)
+			recordpc= new Vector()
+			c=0
+			x=y=z=0
+			sum=0
+		}
+	}
+obfunc connect2target() {localobj nc
+	pc nc=new NetCon(&pcpp.vv,$o1)
+	nc.threshold=10
+	if(numarg()==2) {$o2=nc}
+	return nc
+}
+endtemplate pcadex
+
